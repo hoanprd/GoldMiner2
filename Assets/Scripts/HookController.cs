@@ -101,12 +101,51 @@ public class HookController : MonoBehaviour
     {
         float returnSpeed = baseReturnSpeed;
 
+        if (attached != null)
+        {
+            /*if (!playPullFX)
+            {
+                playPullFX = true;
+                playerAnim.SetBool("hookGold", true);
+                //MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, MenuManager.Instance.canPlayFX);
+            }*/
+
+            // Lấy khối lượng của vàng để làm chậm tốc độ quay về
+            float itemWeight = attached.GetComponent<GoldController>().GetGoldWeight();
+            if (PlayerPrefs.GetInt("BuyPower") == 1)
+            {
+                //returnSpeed /= itemWeight - GameManager.Instance.powerValue;
+                returnSpeed /= itemWeight;
+            }
+            else
+                returnSpeed /= itemWeight; // Vàng nặng làm chậm tốc độ quay về
+        }
+
         transform.position = Vector3.MoveTowards(transform.position, initialPosition, returnSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, initialPosition) < 0.01f)
         {
             isReturning = false;
             isShooting = false;
+
+            if (attached != null)
+            {
+                // Thêm điểm từ vàng đã thu thập
+                int goldPoints = attached.GetComponent<GoldController>().GetGoldValue();
+                GameManager.Instance.AddScore(goldPoints); // Cộng điểm vào GameManager
+
+                Destroy(attached); // Hủy vàng
+                //playerAnim.SetBool("hookGold", false);
+
+                /*if (isHookTNT)
+                {
+                    isHookTNT = false;
+                }*/
+
+                attached = null;
+                //MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, false);
+                //playPullFX = false;
+            }
         }
     }
 
@@ -114,6 +153,13 @@ public class HookController : MonoBehaviour
     {
         if (collision.CompareTag("hookRange"))
         {
+            isReturning = true;
+        }
+        else if (collision.CompareTag("gold") && attached == null)
+        {
+            attached = collision.gameObject;
+            currentObject = collision.transform;
+            collision.GetComponent<GoldController>().AttachToHook(transform);
             isReturning = true;
         }
     }
