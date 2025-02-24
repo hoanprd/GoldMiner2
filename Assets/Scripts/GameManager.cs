@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     private int score;
     public bool IsGameOver { get; private set; } // Kiểm tra trạng thái game over
 
-    //UIManager uiManager; // Tham chiếu đến UIManager
+    UIManager uiManager; // Tham chiếu đến UIManager
     LevelManager lvManager;
 
     private void Awake()
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject); // Nếu có một instance khác, hủy object này
         }
 
-        //uiManager = FindObjectOfType<UIManager>();
+        uiManager = FindObjectOfType<UIManager>();
         lvManager = FindObjectOfType<LevelManager>();
 
         SetScore();
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
 
             score += points;
 
-            //uiManager.UpdateScoreText(score); // Cập nhật UI sau khi cộng điểm
+            uiManager.UpdateScoreText(score); // Cập nhật UI sau khi cộng điểm
             UIManager.updateScore = true;
             UIManager.scoreValue = score;
             CheckLevelTargetPass();

@@ -103,12 +103,12 @@ public class HookController : MonoBehaviour
 
         if (attached != null)
         {
-            /*if (!playPullFX)
+            if (!playPullFX)
             {
                 playPullFX = true;
-                playerAnim.SetBool("hookGold", true);
-                //MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, MenuManager.Instance.canPlayFX);
-            }*/
+                //playerAnim.SetBool("hookGold", true);
+                MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, MenuManager.Instance.canPlayFX);
+            }
 
             // Lấy khối lượng của vàng để làm chậm tốc độ quay về
             float itemWeight = attached.GetComponent<GoldController>().GetGoldWeight();
@@ -137,16 +137,45 @@ public class HookController : MonoBehaviour
                 Destroy(attached); // Hủy vàng
                 //playerAnim.SetBool("hookGold", false);
 
-                /*if (isHookTNT)
+                if (isHookTNT)
                 {
                     isHookTNT = false;
-                }*/
+                }
 
                 attached = null;
-                //MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, false);
-                //playPullFX = false;
+                MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, false);
+                playPullFX = false;
             }
         }
+    }
+
+    public void UseBoosterBomb()
+    {
+        // Kiểm tra nếu có vật thể đang bị kéo
+        if (currentObject != null && PlayerPrefs.GetInt("BuyBomb") > 0)
+        {
+            MenuManager.Instance.PlaySound(MenuManager.Instance.bombFX, MenuManager.Instance.canPlayFX);
+            PlayerPrefs.SetInt("BuyBomb", PlayerPrefs.GetInt("BuyBomb") - 1);
+
+            isHookTNT = true;
+
+            // Sinh hiệu ứng nổ tại vị trí vật thể
+            Instantiate(bombExplosionFXPrefab, currentObject.position, Quaternion.identity);
+
+            // Hủy vật thể bị kéo
+            Destroy(currentObject.gameObject);
+            MenuManager.Instance.PlaySound(MenuManager.Instance.pullFX, false);
+            //playerAnim.SetBool("hookGold", false);
+
+            // Reset trạng thái móc câu
+            ResetHook();
+        }
+    }
+
+    private void ResetHook()
+    {
+        // Đưa móc câu quay về vị trí ban đầu
+        isReturning = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -155,7 +184,7 @@ public class HookController : MonoBehaviour
         {
             isReturning = true;
         }
-        else if (collision.CompareTag("gold") && attached == null)
+        else if ((collision.CompareTag("gold") || collision.CompareTag("ratGold")) && attached == null)
         {
             attached = collision.gameObject;
             currentObject = collision.transform;

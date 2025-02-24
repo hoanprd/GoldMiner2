@@ -353,7 +353,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28e1ad68a0619654ead06486625270ba, type: 3}
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 40
     m_FontStyle: 1
     m_BestFit: 0
@@ -456,8 +456,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 6810204273881336081}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8b98238c07773146a6f883777e42f8c, type: 3}
+  m_Script: {fileID: 11500000, guid: 5516528986389c148b2eb31030ceff54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costValue: 500
+  costValue: 100
   buyButton: {fileID: 1648682470004194599}
